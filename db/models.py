@@ -4,8 +4,9 @@ from typing import Optional, List
 class User(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     username: str = Field(unique=True)
-    is_admin: bool = Field(default=False)
+    email: str
     sets: List["Set"] = Relationship(back_populates="user")
+    scores: List["Score"] = Relationship(back_populates="user")
 
 class Set(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -13,6 +14,7 @@ class Set(SQLModel, table=True):
     user_id: int = Field(foreign_key="user.id")
     user: Optional["User"] = Relationship(back_populates="sets")
     cards: List["Card"] = Relationship(back_populates="set")
+    scores: List["Score"] = Relationship(back_populates="set")
 
 class Card(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
@@ -29,4 +31,4 @@ class Score(SQLModel, table=True):
     date: str
     
     user: Optional["User"] = Relationship(back_populates="scores")
-    set: Optional["Set"] = Relationship(back_populates="sets")
+    set: Optional["Set"] = Relationship(back_populates="scores")

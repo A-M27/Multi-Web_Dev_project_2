@@ -18,25 +18,25 @@ def get_user(user_id: int, session: Session = Depends(get_session)):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     return user
 
-@router.post("/", status_code=status.HTTP_204_NO_CONTENT)
+@router.post("/", status_code=status.HTTP_201_CREATED)
 def create_user(user: User, session: Session = Depends(get_session)):
     session.add(user)
     session.commit()
     session.refresh(user)
-    return
+    return user
 
-@router.put("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+@router.put("/{user_id}", status_code=status.HTTP_200_OK)
 def update_user(user_id: int, user_update: User, session: Session = Depends(get_session)):
-    user = session.get(User, user_id)
-    if not user:
+    db_user = session.get(User, user_id)
+    if not db_user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-    user_data = user_update.dict(exclude_unset=True)
+    user_data = user_update.model_dump(exclude_unset=True)
     for key, value in user_data.items():
-        setattr(user, key, value)
-    session.add(user)
+        setattr(db_user, key, value)
+    session.add(db_user)
     session.commit()
-    session.refresh(user)
-    return
+    session.refresh(db_user)
+    return db_user
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_user(user_id: int, session: Session = Depends(get_session)):
