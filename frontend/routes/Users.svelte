@@ -1,5 +1,5 @@
 <script>
-  import UserList from '/home/andyz_m/fastapi3/frontend/src/lib/components/UserList.svelte';
+  import UserList from '../src/lib/components/UserList.svelte';
 </script>
 <h1>Users</h1>
 <UserList/>
