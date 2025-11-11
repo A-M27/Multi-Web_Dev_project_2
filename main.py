@@ -2,17 +2,15 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from api.v1.api import api_router
-from db.session import create_db_and_tables
+from db.session import create_db_and_tables, engine
+from db.models import User
+from sqlmodel import Session
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     create_db_and_tables()
-    def seed_users():
-        from sqlmodel import Session
-        from db.models import User
-        from db.session import engine
-        
+    def seed_users():        
         with Session(engine) as session:
             if session.query(User).first() is None:
                 
@@ -31,9 +29,9 @@ async def lifespan(app: FastAPI):
                     for last in last_names:
                         username = f"{first}{last}"
                         email = f"{first.lower()}.{last.lower()}@taylor.edu"
-                        users_to_add.append(User(username=username, email=email))
+                        users_added_to_db.append(User(username=username, email=email))
                 
-                session.add_all(users_to_add)
+                session.add_all(users_added_to_db)
                 session.commit()
 
     seed_users()
