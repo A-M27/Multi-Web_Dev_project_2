@@ -14,23 +14,27 @@ async def lifespan(app: FastAPI):
         from db.models import User
         from db.session import engine
         
-        initial_users = [
-            User(username="AliceJohnson", email="alice.johnson@taylor.edu"),
-            User(username="BobSmith", email="bob.smith@taylor.edu"),
-            User(username="CharlieDavis", email="charlie.davis@taylor.edu"),
-            User(username="DanaLee", email="dana.lee@taylor.edu"),
-            User(username="EvanWright", email="evan.wright@taylor.edu"),
-            User(username="FionaGreen", email="fiona.green@taylor.edu"),
-            User(username="GeorgeHill", email="george.hill@taylor.edu"),
-            User(username="HannahKim", email="hannah.kim@taylor.edu"),
-            User(username="IanMiller", email="ian.miller@taylor.edu"),
-            User(username="JuliaChen", email="julia.chen@taylor.edu"),
-        ]
-        
         with Session(engine) as session:
             if session.query(User).first() is None:
-                for user in initial_users:
-                    session.add(user)
+                
+                first_names = [
+                    "Alex", "Bobbie", "Casey", "Drew", "Emerson", "Flynn", "Gray", "Harper"
+
+                ]
+                
+                last_names = [
+                    "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis",
+                    "Rodriguez", "Martinez"
+                ]
+                
+                users_to_add = []
+                for first in first_names:
+                    for last in last_names:
+                        username = f"{first}{last}"
+                        email = f"{first.lower()}.{last.lower()}@taylor.edu"
+                        users_to_add.append(User(username=username, email=email))
+                
+                session.add_all(users_to_add)
                 session.commit()
 
     seed_users()
