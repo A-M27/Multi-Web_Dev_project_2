@@ -7,7 +7,6 @@ from db.session import create_db_and_tables
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    print("Starting up... creating database and tables.")
     create_db_and_tables()
     def seed_users():
         from sqlmodel import Session

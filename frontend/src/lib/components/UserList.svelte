@@ -1,11 +1,9 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import User from './User.svelte'; //Import our user component
-
+    import User from './User.svelte';
     let loading = $state(false);
     let error = $state(null);
     let users = $state([]);
-    
     let crPage = $state(1);
     let perPage = $state(10);
     let totalCount = $state(0);
@@ -20,7 +18,6 @@
             error = null;
             try {
                 const response = await fetch(`http://127.0.0.1:8000/api/v1/users?crPage=${crPage}&perPage=${perPage}`);
-
                 if (!response.ok) throw new Error('Failed to fetch');
                 
                 const data = await response.json();

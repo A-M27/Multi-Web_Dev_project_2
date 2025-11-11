@@ -7,9 +7,7 @@ router = APIRouter()
 
 @router.get("/", status_code=status.HTTP_200_OK)
 def get_all_users(session: Session = Depends(get_session), crPage: int = 1, perPage: int = 10):
-    
     offset_value = (crPage - 1) * perPage
-    
     users_statement = select(User).offset(offset_value).limit(perPage)
     users = session.exec(users_statement).all()
     count_statement = select(func.count(User.id))
