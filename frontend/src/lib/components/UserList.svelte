@@ -52,6 +52,7 @@
     }
   }
   
+  
   function goToPage(page: number) {
         if (page >= 1 && page <= totalPages) {
             crPage = page;
