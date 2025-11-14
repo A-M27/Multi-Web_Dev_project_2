@@ -24,7 +24,7 @@ async def lifespan(app: FastAPI):
                     "Rodriguez", "Martinez"
                 ]
                 
-                users_to_add = []
+                users_added_to_db = []
                 for first in first_names:
                     for last in last_names:
                         username = f"{first}{last}"
