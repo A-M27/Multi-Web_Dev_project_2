@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { currentRoute } from './router.js';
-  import Home from './routes/Home.svelte';
-  import About from './routes/About.svelte';
-  import Users from './routes/Users.svelte';
-  import Admin from './routes/Admin.svelte';
+  import { currentRoute } from '../router.js';
+  import Home from '../routes/Home.svelte';
+  import About from '../routes/About.svelte';
+  import Users from '../routes/Users.svelte';
+  import Admin from '../routes/Admin.svelte';
 
   let route = $derived($currentRoute);
 

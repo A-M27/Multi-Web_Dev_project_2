@@ -1,16 +1,18 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from api.v1.api import api_router
 from db.session import create_db_and_tables, engine
 from db.models import User
 from sqlmodel import Session
+from fastapi.security import OAuth2PasswordBearer
+from api.v1.endpoints.auth import get_password_hash, get_current_user
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     create_db_and_tables()
-    def seed_users():        
+    def seed_users():
         with Session(engine) as session:
             if session.query(User).first() is None:
                 
@@ -29,7 +31,8 @@ async def lifespan(app: FastAPI):
                     for last in last_names:
                         username = f"{first}{last}"
                         email = f"{first.lower()}.{last.lower()}@taylor.edu"
-                        users_added_to_db.append(User(username=username, email=email))
+                        hashed_password = get_password_hash("secret")
+                        users_added_to_db.append(User(username=username, email=email, password_hash=hashed_password))
                 
                 session.add_all(users_added_to_db)
                 session.commit()
@@ -39,7 +42,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
-
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 app.add_middleware(
     CORSMiddleware,
@@ -55,3 +58,7 @@ app.include_router(api_router, prefix="/api/v1")
 @app.get("/")
 async def root():
     return {"message": "Welcome to the API"}
+
+@app.get("/protected/")
+async def protected_route(current_user: User = Depends(get_current_user)):
+    return {"message": f"Hello, {current_user.username}. Access granted."}

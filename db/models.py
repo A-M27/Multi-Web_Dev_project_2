@@ -1,10 +1,22 @@
 from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
 
-class User(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    username: str = Field(unique=True)
+
+
+class UserBase(SQLModel):
+    username: str
     email: str
+
+class UserCreate(UserBase):
+    password: str
+
+class UserInDBBase(UserBase):
+    password_hash: str
+
+
+
+class User(UserInDBBase, table=True):
+    id: int | None = Field(default=None, primary_key=True)
     sets: List["Set"] = Relationship(back_populates="user")
     scores: List["Score"] = Relationship(back_populates="user")
 

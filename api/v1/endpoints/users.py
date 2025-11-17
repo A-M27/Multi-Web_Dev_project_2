@@ -2,18 +2,18 @@ from fastapi import APIRouter, HTTPException, Depends, status
 from sqlmodel import Session, select, func
 from db.models import User
 from db.session import get_session
+from api.v1.endpoints.auth import get_current_user
 
 router = APIRouter()
 
 @router.get("/", status_code=status.HTTP_200_OK)
-def get_all_users(session: Session = Depends(get_session), crPage: int = 1, perPage: int = 10):
+def get_all_users(session: Session = Depends(get_session), crPage: int = 1, perPage: int = 10, current_user: User = Depends(get_current_user)):
     offset_value = (crPage - 1) * perPage
     users_statement = select(User).offset(offset_value).limit(perPage)
     users = session.exec(users_statement).all()
     count_statement = select(func.count(User.id))
     total_count = session.exec(count_statement).one()
     return {"users": users, "total_count": total_count}
-
 
 
 @router.get("/{user_id}", status_code=status.HTTP_200_OK)
