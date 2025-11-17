@@ -8,6 +8,7 @@
     let perPage = $state(10);
     let totalCount = $state(0);
     let totalPages = $derived(Math.ceil(totalCount / perPage));
+    let userSearch = $state("");
     onMount(() => {
 		fetchUsers();
 	});
@@ -17,7 +18,7 @@
             loading = true;
             error = null;
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/v1/users?crPage=${crPage}&perPage=${perPage}`);
+                const response = await fetch(`http://127.0.0.1:8000/api/v1/users?crPage=${crPage}&perPage=${perPage}&userSearch=${userSearch}`);
                 
                 if (!response.ok) {
                     throw new Error(`${response.status} ${response.statusText}`);
@@ -76,6 +77,12 @@
         fetchUsers();
     }
     
+    function searchfunction(){
+        crPage = 0;
+        fetchUsers();
+    }
+    
+    
 </script>
 
 
@@ -84,6 +91,7 @@
 
 <div>
     <span>Results Per Page: </span>
+    search: <input type=text bind:value={userSearch} oninput={searchfunction}>
     <select bind:value={perPage} onchange={onPerPageChange}>
         <option value={5}>5</option>
         <option value={10}>10</option>
