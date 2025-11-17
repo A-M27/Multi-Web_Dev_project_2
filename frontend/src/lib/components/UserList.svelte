@@ -18,12 +18,15 @@
             error = null;
             try {
                 const response = await fetch(`http://127.0.0.1:8000/api/v1/users?crPage=${crPage}&perPage=${perPage}`);
-                if (!response.ok) throw new Error('Failed to fetch');
+                
+                if (!response.ok) {
+                    throw new Error(`${response.status} ${response.statusText}`);
+                }
                 
                 const data = await response.json();
                 users = data.users;
                 totalCount = data.total_count;
-                
+
             } catch (e) {
                 error = e.message;
             } finally {
@@ -41,7 +44,7 @@
           method: 'DELETE',
         });
         if (!response.ok) {
-          throw new Error('Failed to delete user');
+          throw new Error(`Failed to delete: ${response.status} ${response.statusText}`);
         }
         await fetchUsers();
       } catch (e) {
@@ -122,4 +125,3 @@
 <button onclick={fetchUsers}>
   Refresh Users!
 </button>
-
