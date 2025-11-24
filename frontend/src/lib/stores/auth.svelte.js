@@ -7,7 +7,9 @@ export function createAuthStore() {
 
     function init() {
         const token = localStorage.getItem('access_token');
-        const userData = localStorage.getItem('user');
+        const userData = localStorage.getItem('user');# For Debian/Ubuntu
+sudo apt update
+sudo apt install --reinstall usbutils
 
         if (token) {
             isAuthenticated = true;
