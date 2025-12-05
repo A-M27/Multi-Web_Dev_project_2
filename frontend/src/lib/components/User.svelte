@@ -11,4 +11,4 @@
     </button>
   </p>
 </div>
-<hr />
+<hr/>
